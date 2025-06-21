@@ -1,0 +1,9 @@
+node_modules/
+test-results/
+playwright-report/
+.vscode/
+.idea/
+.DS_Store
+*.log
+.env
+.env.*
