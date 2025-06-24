@@ -1,6 +1,9 @@
 import { expect, test } from '@playwright/test';
 import { Page01 } from '../pages/page01'
 import { navDropDownLinks, dropdownCategories } from "../data/navDropDownLinks"
+import { navLinks } from "../data/navLinks";
+
+
 test.describe('Homepage Logo Test', () => {
   let homePage: Page01;
 
@@ -66,3 +69,29 @@ test.describe('Navbar dropdown all links', () => {
   }
 });
 
+
+test.describe('Navbar assertions', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/')
+  })
+
+  for (const { name, dropdown: dropDownMenu } of navLinks) {
+    test(`Main nav item "${name}"  has correct link`, async ({ page }) => {
+      const mainNavLink = page.getByRole('link', {
+        name, exact: false
+      });
+      await expect(mainNavLink).toBeVisible();
+      await mainNavLink.hover();
+
+      for (const { text, href } of dropDownMenu) {
+        const dropDownLink = page.getByRole('link', {
+          name: text,
+          exact: false
+        })
+        await expect(dropDownLink).toBeVisible()
+        const linkHref = await dropDownLink.getAttribute('href');
+        expect(linkHref).toBe(href);
+      }
+    })
+  }
+})
